@@ -22,7 +22,7 @@ import java.util.List;
 public class RecipeCommand {
     private String id;
 
-    @NotBlank
+//    @NotBlank
     @Size(min = 3, max = 255)
     private String description;
 
@@ -42,7 +42,7 @@ public class RecipeCommand {
     @URL
     private String url;
 
-    @NotBlank
+//    @NotBlank
     private String directions;
 
     private List<IngredientCommand> ingredients = new ArrayList<>();
