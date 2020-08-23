@@ -1,7 +1,7 @@
 package com.florian.services;
 
-import com.florian.domain.Recipe;
 import com.florian.repositories.RecipeRepository;
+import com.florian.domain.Recipe;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

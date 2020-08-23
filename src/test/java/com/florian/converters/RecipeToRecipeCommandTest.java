@@ -2,7 +2,6 @@ package com.florian.converters;
 
 import com.florian.commands.RecipeCommand;
 import com.florian.domain.*;
-import guru.springframework.domain.*;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
