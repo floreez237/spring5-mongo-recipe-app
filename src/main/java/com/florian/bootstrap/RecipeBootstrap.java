@@ -4,7 +4,11 @@ import com.florian.domain.*;
 import com.florian.repositories.CategoryRepository;
 import com.florian.repositories.RecipeRepository;
 import com.florian.repositories.UnitOfMeasureRepository;
+import com.florian.repositories.reactive.CategoryReactiveRepository;
+import com.florian.repositories.reactive.RecipeReactiveRepository;
+import com.florian.repositories.reactive.UnitOfMeasureReactiveRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Component;
@@ -39,6 +43,7 @@ public class RecipeBootstrap implements ApplicationListener<ContextRefreshedEven
         loadCategories();
         loadUom();
         recipeRepository.saveAll(getRecipes());
+//        recipeReactiveRepository.saveAll(getRecipes());
         log.debug("Loading Bootstrap Data");
     }
 

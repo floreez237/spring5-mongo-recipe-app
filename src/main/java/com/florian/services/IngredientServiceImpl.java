@@ -2,13 +2,14 @@ package com.florian.services;
 
 import com.florian.commands.IngredientCommand;
 import com.florian.converters.IngredientToIngredientCommand;
-import com.florian.repositories.RecipeRepository;
-import com.florian.repositories.UnitOfMeasureRepository;
 import com.florian.converters.IngredientCommandToIngredient;
 import com.florian.domain.Ingredient;
 import com.florian.domain.Recipe;
+import com.florian.repositories.RecipeRepository;
+import com.florian.repositories.UnitOfMeasureRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Mono;
 
 import java.util.Optional;
 
@@ -34,16 +35,17 @@ public class IngredientServiceImpl implements IngredientService {
     }
 
     @Override
-    public IngredientCommand findByRecipeIdAndIngredientId(String recipeId, String ingredientId) {
+    public Mono<IngredientCommand> findByRecipeIdAndIngredientId(String recipeId, String ingredientId) {
 
-        Optional<Recipe> recipeOptional = recipeRepository.findById(recipeId);
+        Optional<Recipe> optionalRecipe = recipeRepository.findById(recipeId);
 
-        if (!recipeOptional.isPresent()){
+
+        if (!optionalRecipe.isPresent()){
             //todo impl error handling
             log.error("recipe id not found. Id: " + recipeId);
         }
 
-        Recipe recipe = recipeOptional.get();
+        Recipe recipe = optionalRecipe.get();
 
         Optional<IngredientCommand> ingredientCommandOptional = recipe.getIngredients().stream()
                 .filter(ingredient -> ingredient.getId().equals(ingredientId))
@@ -57,18 +59,18 @@ public class IngredientServiceImpl implements IngredientService {
         IngredientCommand ingredientCommand = ingredientCommandOptional.get();
         ingredientCommand.setRecipeId(recipeId);
 
-        return ingredientCommandOptional.get();
+        return Mono.just(ingredientCommandOptional.get());
     }
 
     @Override
-    public IngredientCommand saveIngredientCommand(IngredientCommand command) {
+    public Mono<IngredientCommand> saveIngredientCommand(IngredientCommand command) {
         Optional<Recipe> recipeOptional = recipeRepository.findById(command.getRecipeId());
 
         if(!recipeOptional.isPresent()){
 
             //todo toss error if not found!
             log.error("Recipe not found for id: " + command.getRecipeId());
-            return new IngredientCommand();
+            return Mono.just(new IngredientCommand());
         } else {
             Recipe recipe = recipeOptional.get();
 
@@ -109,13 +111,13 @@ public class IngredientServiceImpl implements IngredientService {
             }
 
             //todo check for fail
-            return ingredientToIngredientCommand.convert(savedIngredientOptional.get());
+            return Mono.just(ingredientToIngredientCommand.convert(savedIngredientOptional.get()));
         }
 
     }
 
     @Override
-    public void deleteById(String recipeId, String idToDelete) {
+    public Mono<Void> deleteById(String recipeId, String idToDelete) {
 
         log.debug("Deleting ingredient: " + recipeId + ":" + idToDelete);
 
@@ -141,5 +143,6 @@ public class IngredientServiceImpl implements IngredientService {
         } else {
             log.debug("Recipe Id Not found. Id:" + recipeId);
         }
+        return null;
     }
 }

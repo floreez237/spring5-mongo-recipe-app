@@ -2,12 +2,9 @@ package com.florian.services;
 
 import com.florian.commands.UnitOfMeasureCommand;
 import com.florian.converters.UnitOfMeasureToUnitOfMeasureCommand;
-import com.florian.repositories.UnitOfMeasureRepository;
+import com.florian.repositories.reactive.UnitOfMeasureReactiveRepository;
 import org.springframework.stereotype.Service;
-
-import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
+import reactor.core.publisher.Flux;
 
 /**
  * Created by jt on 6/28/17.
@@ -15,20 +12,21 @@ import java.util.stream.StreamSupport;
 @Service
 public class UnitOfMeasureServiceImpl implements UnitOfMeasureService {
 
-    private final UnitOfMeasureRepository unitOfMeasureRepository;
     private final UnitOfMeasureToUnitOfMeasureCommand unitOfMeasureToUnitOfMeasureCommand;
+    private final UnitOfMeasureReactiveRepository unitOfMeasureReactiveRepository;
 
-    public UnitOfMeasureServiceImpl(UnitOfMeasureRepository unitOfMeasureRepository, UnitOfMeasureToUnitOfMeasureCommand unitOfMeasureToUnitOfMeasureCommand) {
-        this.unitOfMeasureRepository = unitOfMeasureRepository;
+    public UnitOfMeasureServiceImpl(UnitOfMeasureToUnitOfMeasureCommand unitOfMeasureToUnitOfMeasureCommand, UnitOfMeasureReactiveRepository unitOfMeasureReactiveRepository) {
         this.unitOfMeasureToUnitOfMeasureCommand = unitOfMeasureToUnitOfMeasureCommand;
+        this.unitOfMeasureReactiveRepository = unitOfMeasureReactiveRepository;
     }
 
     @Override
-    public Set<UnitOfMeasureCommand> listAllUoms() {
+    public Flux<UnitOfMeasureCommand> listAllUoms() {
+return unitOfMeasureReactiveRepository.findAll().map(unitOfMeasureToUnitOfMeasureCommand::convert);
 
-        return StreamSupport.stream(unitOfMeasureRepository.findAll()
-                .spliterator(), false)
-                .map(unitOfMeasureToUnitOfMeasureCommand::convert)
-                .collect(Collectors.toSet());
+//        return StreamSupport.stream(unitOfMeasureRepository.findAll()
+//                .spliterator(), false)
+//                .map(unitOfMeasureToUnitOfMeasureCommand::convert)
+//                .collect(Collectors.toSet());
     }
 }
