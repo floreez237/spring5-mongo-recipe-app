@@ -1,3 +1,4 @@
+/*
 package com.florian.controllers;
 
 import com.florian.commands.RecipeCommand;
@@ -20,7 +21,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@Ignore
+//@Ignore
 public class ImageControllerTest {
 
     @Mock
@@ -74,7 +75,8 @@ public class ImageControllerTest {
     }
 
 
-    /*@Test
+    */
+/*@Test
     public void renderImageFromDB() throws Exception {
 
         //given
@@ -102,6 +104,7 @@ public class ImageControllerTest {
         byte[] reponseBytes = response.getContentAsByteArray();
 
         assertEquals(s.getBytes().length, reponseBytes.length);
-    }*/
+    }*//*
 
-}
+
+}*/
