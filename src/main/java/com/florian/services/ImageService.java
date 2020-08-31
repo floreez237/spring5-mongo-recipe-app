@@ -1,12 +1,12 @@
 package com.florian.services;
 
+import org.springframework.http.codec.multipart.FilePart;
 import org.springframework.web.multipart.MultipartFile;
-import reactor.core.publisher.Mono;
 
 /**
  * Created by jt on 7/3/17.
  */
 public interface ImageService {
 
-    Mono<Void> saveImageFile(String recipeId, MultipartFile file);
+    void saveImageFile(String recipeId, FilePart file);
 }

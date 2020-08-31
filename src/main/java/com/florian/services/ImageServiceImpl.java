@@ -1,15 +1,18 @@
 package com.florian.services;
 
-import com.florian.commands.RecipeCommand;
 import com.florian.domain.Recipe;
 import com.florian.repositories.reactive.RecipeReactiveRepository;
+import com.mongodb.Bytes;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.mongodb.repository.ReactiveMongoRepository;
+import org.apache.commons.lang3.ArrayUtils;
+import org.springframework.core.io.buffer.DataBufferUtils;
+import org.springframework.http.codec.multipart.FilePart;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import reactor.core.publisher.Mono;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 
 /**
  * Created by jt on 7/3/17.
@@ -27,9 +30,27 @@ public class ImageServiceImpl implements ImageService {
     }
 
     @Override
-    public Mono<Void> saveImageFile(String recipeId, MultipartFile file) {
+    public void saveImageFile(String recipeId, FilePart file) {
 
-        Mono<Recipe> recipeMono = recipeReactiveRepository.findById(recipeId)
+        Mono<Byte[]> imageBytes = file.content().map(dataBuffer -> {
+            byte[] bytes = new byte[dataBuffer.readableByteCount()];
+            dataBuffer.read(bytes);
+            DataBufferUtils.release(dataBuffer);
+
+            Byte[] boxedBytes = new Byte[bytes.length];
+            for (int i = 0; i < bytes.length; i++) {
+                boxedBytes[i] = bytes[i];
+            }
+            return boxedBytes;
+        }).reduce(ArrayUtils::addAll);
+        imageBytes.subscribe(bytes -> recipeReactiveRepository.findById(recipeId)
+                .subscribe(recipe -> {
+                    recipe.setImage(bytes);
+                    recipeReactiveRepository.save(recipe).subscribe();
+                }));
+
+
+        /*Mono<Recipe> recipeMono = recipeReactiveRepository.findById(recipeId)
                 .map(recipe -> {
                     try {
 
@@ -50,7 +71,6 @@ public class ImageServiceImpl implements ImageService {
                         throw new RuntimeException(e);
                     }
                 });
-        recipeReactiveRepository.save(recipeMono.block()).block();
-        return Mono.empty();
+        recipeReactiveRepository.saveAll(recipeMono).blockFirst();*/
     }
 }

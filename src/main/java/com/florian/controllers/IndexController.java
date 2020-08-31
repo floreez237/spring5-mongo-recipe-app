@@ -7,7 +7,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 
 /**
  * Created by jt on 6/1/17.
@@ -25,8 +27,9 @@ public class IndexController {
     @RequestMapping({"", "/", "/index"})
     public String getIndexPage(Model model) {
         log.debug("Getting Index page");
-
-        model.addAttribute("recipes", recipeService.getRecipes().collectList().block());
+//        List<Recipe> listOfRecipes = new ArrayList<>();
+//        recipeService.getRecipes().subscribe(listOfRecipes::add);
+        model.addAttribute("recipes",recipeService.getRecipes());
 
         return "index";
     }

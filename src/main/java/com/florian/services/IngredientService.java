@@ -12,5 +12,5 @@ public interface IngredientService {
 
     Mono<IngredientCommand> saveIngredientCommand(IngredientCommand command);
 
-    Mono<Void> deleteById(String recipeId, String idToDelete);
+    void deleteById(String recipeId, String idToDelete);
 }
